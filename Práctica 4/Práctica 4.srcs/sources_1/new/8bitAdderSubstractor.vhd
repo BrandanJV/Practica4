@@ -34,27 +34,34 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity bitAdderSubstractor is
     Port (a:in bit_vector(7 downto 0);
             b:in bit_vector(7 downto 0);
-            centrada:in bit;
+            centrada, Subs:in bit;
             sumador:out bit_vector(7 downto 0);
             cout:out bit);
 end bitAdderSubstractor;
 
 architecture Behavioral of bitAdderSubstractor is
     component FullAdder is
-        port (X: in bit;
-                Y:in bit;
-                Cin:in bit;
+        port (X, Y, Cin: in bit;
                 Sum:out bit;
                 Cout:out bit);
      end component;
 signal C:bit_vector(7 downto 1);
+signal SubSignal: bit_vector(7 downto 0);
 begin
-    FA0:FullAdder port map(a(0), b(0), centrada, C(1), sumador(0));
-    FA1:FullAdder port map(a(1), b(1), C(1), C(2), sumador(1));
-    FA2:FullAdder port map(a(2), b(2), C(2), C(3), sumador(2));
-    FA3:FullAdder port map(a(3), b(3), C(3), C(4), sumador(3));
-    FA4:FullAdder port map(a(4), b(4), C(4), C(5), sumador(4));
-    FA5:FullAdder port map(a(5), b(5), C(5), C(6), sumador(5));
-    FA6:FullAdder port map(a(6), b(6), C(6), C(7), sumador(6));
-    FA7:FullAdder port map(a(7), b(7), C(7), cout, sumador(7));
+    SubSignal(0) <= B(0) xor Subs;
+    SubSignal(1) <= B(1) xor Subs;
+    SubSignal(2) <= B(2) xor Subs;
+    SubSignal(3) <= B(3) xor Subs;
+    SubSignal(4) <= B(4) xor Subs;
+    SubSignal(5) <= B(5) xor Subs;
+    SubSignal(6) <= B(6) xor Subs;
+    SubSignal(7) <= B(7) xor Subs;
+    FA0:FullAdder port map(a(0), SubSignal(0), centrada, sumador(0), C(1));
+    FA1:FullAdder port map(a(1), SubSignal(1), C(1), sumador(1), C(2));
+    FA2:FullAdder port map(a(2), SubSignal(2), C(2), sumador(2), C(3));
+    FA3:FullAdder port map(a(3), SubSignal(3), C(3), sumador(3), C(4));
+    FA4:FullAdder port map(a(4), SubSignal(4), C(4), sumador(4), C(5));
+    FA5:FullAdder port map(a(5), SubSignal(5), C(5), sumador(5), C(6));
+    FA6:FullAdder port map(a(6), SubSignal(6), C(6), sumador(6), C(7));
+    FA7:FullAdder port map(a(7), SubSignal(7), C(7), sumador(7), cout);
 end Behavioral;
